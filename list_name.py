@@ -22,6 +22,8 @@ for i, imagePath in enumerate(imagePaths):
     known_face_names.append(name)
 
 def append_names(frame):
+    
+        frame = cv2.flip(frame, 1)
         small_frame = cv2.resize(frame, (0, 0), fx=FX, fy=FY)
         rgb_small_frame = small_frame[:, :, ::-1]
 
@@ -36,9 +38,7 @@ def append_names(frame):
             if distances < 0.13:
                 name = known_face_names[labels[0][0]]
             face_names.append(name)
-
-        return face_names
-
+            
         #Draw rectangle in faces 
         for (top, right, bottom, left), name in zip(face_locations, face_names):
             top *= 4
@@ -49,6 +49,14 @@ def append_names(frame):
             cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
             font = cv2.FONT_HERSHEY_DUPLEX
             cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
+            
+            cv2.imshow('Video', frame)
+            if(cv2.waitKey(1) & 0xFF == ord('q')):
+                break
+
+        return face_names
+
+
 
 while True:  
     ret, frame = video_capture.read()
